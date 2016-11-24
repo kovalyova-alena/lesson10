@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Slider</title>
+	<style>
+		.big-img{
+			display: block;
+			position: relative;
+			width: 200px;
+			height: 200px;
+		}
+
+		.big-img img {
+			width: 200px;
+		}
+
+		.overflow {
+			position: relative;
+			overflow: hidden;
+
+		}
+
+		.responsive {
+			position: relative;
+			display: block;
+		}
+
+		.responsive img {
+			width: 50px;
+			height: 50px;
+			float: left;
+		}
+		.active {
+			opacity: 0.5;
+		}
+	</style>
+</head>
+<body>
+	<div class="big-img"></div>
+	<div class="overflow">
+		<div class="responsive">
+			<img src="img/1.jpg" alt="" id="first">
+			<img src="img/2.jpg" alt="">
+			<img src="img/3.jpg" alt="">
+			<img src="img/4.jpg" alt="">
+			<img src="img/5.jpg" alt="">
+		</div>
+	</div>
+	<div class="buttons">	
+		<button data-id="prev">Prev</button>
+        <button data-id="next">Next</button>
+	</div>
+	
+	<script>
+		function Slider(value) {
+			this.blockOverflow = document.querySelector('.overflow');
+			this.blockResponsive = document.querySelector('.responsive');
+			this.bigImg = document.querySelector('.big-img');
+            this.buttons = document.querySelector('.buttons');
+			this.countImg = this.blockResponsive.children.length;  
+			this.imgWidth = this.blockResponsive.firstElementChild.clientWidth; 
+			this.value = value;
+		    this.firstImgSrc = this.blockResponsive.firstElementChild.src;
+            this.firstImg = this.blockResponsive.firstElementChild;
+            this.images = document.querySelectorAll('img');	    
+		    this.generate();
+		    this.blockResponsive.addEventListener('click', this.handlerImg.bind(this));
+            this.buttons.addEventListener('click', this.handlerButtons.bind(this));
+		 }
+
+         Slider.prototype.handlerImg = function (e) {
+            var target = e && e.target || e.srcElement;
+
+            if (!target) return;
+            if (target.src) {              
+                this.activeImg = document.querySelector('.active'); 
+                this.bigImg.firstElementChild.src = target.src;
+                this.activeImg.classList.remove('active');
+                target.classList.add('active');  
+            }
+        }
+
+        Slider.prototype.handlerButtons = function (e) {
+            var target = e && e.target || e.srcElement,
+                buttonDataId = target.getAttribute('data-id');
+
+            if (!buttonDataId) return;
+            (buttonDataId == 'next') ? this.sliderHandlerRight() : this.sliderHandlerLeft();
+            this.divToMove();
+        }
+
+        Slider.prototype.sliderHandlerRight = function (elem,metod,params) {
+            this.activeImg = document.querySelector('.active'); 
+            this.nextImg = this.activeImg.nextElementSibling;
+            this.RemoveAndAddClasses(this.nextImg, 'active');
+         
+            if (!this.nextImg.classList.contains('viewport')) {  
+                this.blockResponsive.firstElementChild.classList.remove('viewport');
+                this.nextImg.classList.add('viewport');
+                this.sliderClone('firstElementChild', 'appendChild');
+            }          
+        }
+
+        Slider.prototype.sliderHandlerLeft = function (elem,metod,params) {
+            this.activeImg = document.querySelector('.active'); 
+            this.prevImg = this.activeImg.previousElementSibling; 
+            if (this.prevImg == null) {
+                this.prevImg = this.blockResponsive.lastElementChild;
+                this.viewport = document.querySelectorAll('.viewport');
+                this.viewport[this.value - 1].classList.remove('viewport');
+                this.RemoveAndAddClasses(this.prevImg, 'active');
+                this.prevImg.classList.add("viewport");
+                this.sliderClone('lastElementChild', 'insertBefore', this.blockResponsive.firstElementChild );
+
+           } else {
+                this.divToMove();
+                this.RemoveAndAddClasses(this.prevImg, 'active');
+                this.sliderClone('lastElementChild', 'insertBefore', this.blockResponsive.lastElementChild );
+           }
+             
+        }
+
+        Slider.prototype.RemoveAndAddClasses = function (what, class1) {
+            this.bigImg.firstElementChild.src = what.src;
+            this.activeImg.classList.remove('active');
+            what.classList.add(class1);
+        }
+
+        Slider.prototype.sliderClone = function (elem, method, params) {
+            var element = this.blockResponsive[elem],
+                clone = element.cloneNode();
+
+            this.blockResponsive[method](clone, params);
+            this.divToMove(-this.imgWidth);
+            this.blockResponsive.removeChild(element);
+        }
+
+		Slider.prototype.generate = function () {
+            this.blockResponsive.style.width = this.imgWidth*this.countImg + "px";
+		 	this.blockOverflow.style.width = this.imgWidth*this.value + "px";  
+            this.bigImg.innerHTML = "<img src=" + this.firstImgSrc + ">";
+		 	this.firstImg.classList.add('active');
+            for (var i = 0; this.value > i ; i++) {
+                this.images[i].classList.add('viewport');
+            }
+		 }
+
+        Slider.prototype.divToMove = function (left) {
+            var left = left ? left: 0;
+            this.blockResponsive.style.left = left + 'px;';
+        }
+
+		new Slider(3);
+	</script>
+</body>
+</html>
