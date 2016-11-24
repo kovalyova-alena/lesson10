@@ -54,20 +54,20 @@
 	
 	<script>
 		function Slider(value) {
-			this.blockOverflow = document.querySelector('.overflow');
-			this.blockResponsive = document.querySelector('.responsive');
-			this.bigImg = document.querySelector('.big-img');
+            this.blockOverflow = document.querySelector('.overflow');
+            this.blockResponsive = document.querySelector('.responsive');
+            this.bigImg = document.querySelector('.big-img');
             this.buttons = document.querySelector('.buttons');
-			this.countImg = this.blockResponsive.children.length;  
-			this.imgWidth = this.blockResponsive.firstElementChild.clientWidth; 
-			this.value = value;
-		    this.firstImgSrc = this.blockResponsive.firstElementChild.src;
+            this.countImg = this.blockResponsive.children.length;  
+            this.imgWidth = this.blockResponsive.firstElementChild.clientWidth; 
+            this.value = value;
+            this.firstImgSrc = this.blockResponsive.firstElementChild.src;
             this.firstImg = this.blockResponsive.firstElementChild;
             this.images = document.querySelectorAll('img');	    
-		    this.generate();
-		    this.blockResponsive.addEventListener('click', this.handlerImg.bind(this));
+            this.generate();
+            this.blockResponsive.addEventListener('click', this.handlerImg.bind(this));
             this.buttons.addEventListener('click', this.handlerButtons.bind(this));
-		 }
+        }
 
          Slider.prototype.handlerImg = function (e) {
             var target = e && e.target || e.srcElement;
@@ -136,22 +136,23 @@
             this.blockResponsive.removeChild(element);
         }
 
-		Slider.prototype.generate = function () {
+        Slider.prototype.generate = function () {
             this.blockResponsive.style.width = this.imgWidth*this.countImg + "px";
-		 	this.blockOverflow.style.width = this.imgWidth*this.value + "px";  
+            this.blockOverflow.style.width = this.imgWidth*this.value + "px";  
             this.bigImg.innerHTML = "<img src=" + this.firstImgSrc + ">";
-		 	this.firstImg.classList.add('active');
+            this.firstImg.classList.add('active');
+
             for (var i = 0; this.value > i ; i++) {
                 this.images[i].classList.add('viewport');
             }
-		 }
+        }
 
         Slider.prototype.divToMove = function (left) {
             var left = left ? left: 0;
             this.blockResponsive.style.left = left + 'px;';
         }
 
-		new Slider(3);
+        new Slider(3);
 	</script>
 </body>
 </html>
